@@ -1,5 +1,4 @@
-var fs = require('fs');
-
+const fs = require('fs');
 const { initConfig, getConfig } = require('./config.js');
 const { PriorityQueue } = require('./priorityQueue.js');
 const { NewRequestEvent, FileRecievedEvent } = require('./events.js');
@@ -7,10 +6,15 @@ const { setupFiles, getSampleFile } = require('./files.js');
 const { setupCache } = require('./cache.js');
 const { printStats } = require('./stats.js');
 
-//const inputFileName = process.argv[2];
 const inputFileName = "config.json";
 
-
+/**
+ * Function to generate pareto distribution
+ * @param {float} minimum 
+ * @param {float} alpha 
+ * @param {int} size 
+ * @returns {Array.<float>} An array of generated pareto distribution
+ */
 let generateParetoDistribution = (minimum, alpha, size) => {
     let res = [];
     for (let i = 0; i < size; i++) {
@@ -23,10 +27,9 @@ let generateParetoDistribution = (minimum, alpha, size) => {
 var inputConfig = JSON.parse(fs.readFileSync('inputs/' + inputFileName, 'utf8'));
 initConfig(inputConfig.config);
 
-console.log(JSON.stringify(inputConfig, null, 2));
+//console.log(JSON.stringify(inputConfig, null, 2));
 
-// File i has a size Si,
-// which is a sample drawn from a Pareto distribution (heavy tail),
+// File i has a size Si, which is a sample drawn from a Pareto distribution (heavy tail),
 // F_S, with mean μ (e.g., μ= 1 MB).
 let paretoAlpha = getConfig()["paretoAlpha"];
 let num_files = getConfig()["numFiles"];
@@ -47,7 +50,6 @@ let file_sizes = generateParetoDistribution(paretoSeed, paretoAlpha, num_files);
 // We then calculate the file probability as probabilitie[i]/sum(probabilities)
 let probabilities = generateParetoDistribution(paretoSeed, paretoAlpha, num_files);
 let totalProbability = probabilities.reduce((partialSum, a) => partialSum + a, 0);
-
 
 let currentTime = 0;
 let requestsProcessed = 0;

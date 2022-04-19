@@ -1,17 +1,34 @@
+/**
+ * @class Node
+ */
 class Node {
+  /**
+   * Create a node with value
+   * @param {*} value 
+   */
   constructor(value) {
       this.value = value;
       this.next = null;
   }
 }
 
+/**
+ * @class Queue
+ */
 class Queue {
+  /**
+   * Create a Queue
+   */
   constructor() {
       this.head = null;
       this.tail = null;
       this.length = 0;
   }
 
+  /**
+   * Add value to queue
+   * @param {*} value 
+   */
   enqueue(value) {
       const node = new Node(value);
 
@@ -26,8 +43,10 @@ class Queue {
       this.length++;
   }
 
-  
-
+  /**
+   * Pop item from queue
+   * @returns {*} item - the item from queue
+   */
   dequeue() {
       const current = this.head;
       this.head = this.head.next;
@@ -36,18 +55,25 @@ class Queue {
       return current.value;
   }
 
+  /**
+   * If the queue is empty
+   * @returns {boolean}
+   */
   isEmpty() {
       return this.length === 0;
   }
 
-  getHead() {
-      return this.head.value;
-  }
-
+  /**
+   * Get length of Queue
+   * @returns {int} length
+   */
   getLength() {
       return this.length;
   }
 
+  /**
+   * Print the Queue
+   */
   print() {
       let current = this.head;
 

@@ -1,9 +1,17 @@
+const {weighted_random} = require('./utils.js');
 
 let fileStore = {
     files: [],
     weights: []
 }
 
+/**
+ * Function to setup the file store according to the inputs
+ * @param {int} n - Number of files
+ * @param {Array.<float>} fileSizes - Array of file sizes of each file
+ * @param {Array.<float>} weights - probability of each file
+ * @param {float} totalWeight - Sum of probabilities of all files
+ */
 module.exports.setupFiles = (n, fileSizes, weights, totalWeight) => {
     for (let i = 0; i < n; i++) {
         fileStore.files.push({
@@ -30,6 +38,10 @@ module.exports.verifyFiles = (n, fileSizes, probabilities) => {
     console.log("Mean file size: " + this.size() / fileStore.files.length);
 }
 
+/**
+ * Function to pick a random file based of each file's probability
+ * @returns {Object} File
+ */
 module.exports.getSampleFile = () => {
     // Sample as determined by probability weights.
     let randomFile = weighted_random(fileStore.files, fileStore.weights);
@@ -37,6 +49,10 @@ module.exports.getSampleFile = () => {
     return randomFile;
 }
 
+/**
+ * Function to calculate the mean of sizes of all the files
+ * @returns {float} MeanFileSizes
+ */
 module.exports.mean = () => {
     //return sum(map(lambda f: f.size, fileStore.files)) / len(fileStore.files)
     let size = 0;
@@ -46,26 +62,15 @@ module.exports.mean = () => {
     return size/fileStore.files.length;
 }
 
+/**
+ * Function to calculate the sum of sizes of all the files
+ * @returns {float} sumFileSizes
+ */
 module.exports.size = () => {
     //return sum(map(lambda f: f.size, fileStore.files))
     let size = 0;
     for(let i=0; i<fileStore.files.length; i++){
-        size = fileStore.files[i].size;
+        size += fileStore.files[i].size;
     }
     return size;
-}
-
-function weighted_random(items, weights) {
-    let i;
-
-    for (i = 0; i < weights.length; i++)
-        weights[i] += weights[i - 1] || 0;
-    
-    let random = Math.random() * weights[weights.length - 1];
-    
-    for (i = 0; i < weights.length; i++)
-        if (weights[i] > random)
-            break;
-    
-    return items[i];
 }

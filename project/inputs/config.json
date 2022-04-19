@@ -10,7 +10,6 @@
         "paretoAlpha": 2,
         "cacheSize": 200,
         "cacheType": "FIFO",
-        "logging": true,
         "show_plot": false,
         "paretoSeed": 2
     }
