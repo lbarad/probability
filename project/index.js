@@ -3,8 +3,9 @@ var fs = require('fs');
 const { initConfig, getConfig } = require('./config.js');
 const { PriorityQueue } = require('./priorityQueue.js');
 const { NewRequestEvent, FileRecievedEvent } = require('./events.js');
-const { setupFiles, getSampleFiles } = require('./files.js');
+const { setupFiles, getSampleFile } = require('./files.js');
 const { setupCache } = require('./cache.js');
+const { printStats } = require('./stats.js');
 
 //const inputFileName = process.argv[2];
 const inputFileName = "config.json";
@@ -35,7 +36,7 @@ let time_limit = getConfig()["timeLimit"];
 
 let pQueue = new PriorityQueue({
     compare: (e1, e2) => {
-        return e1.time < e2.time ? 1 : -1;
+        return e1.time < e2.time ? -1 : 1;
     }
 });
 
@@ -54,7 +55,7 @@ let requestsProcessed = 0;
 setupFiles(num_files, file_sizes, probabilities, totalProbability);
 let cache = setupCache(getConfig()["cacheType"], parseFloat(getConfig()["cacheSize"])); //This should setup the cache according to the cache stratergy
 
-pQueue.enqueue(new NewRequestEvent(currentTime, getSampleFiles()));
+pQueue.enqueue(new NewRequestEvent(currentTime, getSampleFile()));
 
 //loop_start = time.time()
 let event_count = 0
@@ -67,3 +68,5 @@ while (requestsProcessed < totalRequests || currentTime < time_limit) {
     if (event instanceof FileRecievedEvent)
         requestsProcessed += 1
 }
+
+printStats();

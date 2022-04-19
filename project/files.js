@@ -1,17 +1,18 @@
 
 let fileStore = {
     files: [],
-    cumulative_weights: []
+    weights: []
 }
 
-module.exports.setupFiles = (n, fileSizes, probabilities, totalProbability) => {
+module.exports.setupFiles = (n, fileSizes, weights, totalWeight) => {
     for (let i = 0; i < n; i++) {
         fileStore.files.push({
             id: i,
             size: fileSizes[i],
-            prob: probabilities[i] / totalProbability
+            prob: weights[i] / totalWeight
         });
     }
+    fileStore.weights = weights;
 }
 
 module.exports.verifyFiles = (n, fileSizes, probabilities) => {
@@ -29,9 +30,11 @@ module.exports.verifyFiles = (n, fileSizes, probabilities) => {
     console.log("Mean file size: " + this.size() / fileStore.files.length);
 }
 
-module.exports.getSampleFiles = () => {
+module.exports.getSampleFile = () => {
     // Sample as determined by probability weights.
-    return weighted_random(fileStore.files, fileStore.cumulative_weights);
+    let randomFile = weighted_random(fileStore.files, fileStore.weights);
+    //console.log(randomFile.id);
+    return randomFile;
 }
 
 module.exports.mean = () => {
@@ -55,8 +58,8 @@ module.exports.size = () => {
 function weighted_random(items, weights) {
     let i;
 
-    // for (i = 0; i < weights.length; i++)
-    //     weights[i] += weights[i - 1] || 0;
+    for (i = 0; i < weights.length; i++)
+        weights[i] += weights[i - 1] || 0;
     
     let random = Math.random() * weights[weights.length - 1];
     

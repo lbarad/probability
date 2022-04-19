@@ -1,7 +1,7 @@
 {
     "config": {
-        "totalRequests": 30000,
-        "numFiles": 10000,
+        "totalRequests": 20,
+        "numFiles": 10,
         "timeLimit": 600,
         "requestRate": 10.0,
         "networkBandwidth": 100,
@@ -9,7 +9,7 @@
         "roundTrip": 0.4,
         "paretoAlpha": 2,
         "cacheSize": 200,
-        "cacheType": "LRU",
+        "cacheType": "FIFO",
         "logging": true,
         "show_plot": false,
         "paretoSeed": 2

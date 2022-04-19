@@ -1,8 +1,8 @@
 const { getConfig } = require('./config.js');
 const { nextExponential } = require('./utils.js');
-const { getSampleFiles } = require('./files.js');
-const Queue = require('queue-fifo');
-const {appendToCacheHits, appendToResponseTimes, incrementCacheHits} = require('./stats.js');
+const { getSampleFile } = require('./files.js');
+const { Queue } = require('./Queue.js');
+const { appendToCacheHits, appendToResponseTimes, incrementCacheHits } = require('./stats.js');
 
 class Event {
     constructor(time, file, prev, meta) {
@@ -25,7 +25,7 @@ class Event {
 class NewRequestEvent extends Event {
 
     process(queue, cache, currentTime) {
-        if (this.file in cache) {
+        if (cache.get(this.file)) {
             let networkBandwidth = parseFloat(getConfig()["networkBandwidth"])
             queue.enqueue(
                 new FileRecievedEvent(
@@ -45,7 +45,7 @@ class NewRequestEvent extends Event {
 
         let requestRate = parseFloat(getConfig()["requestRate"]);
         let poissonSample = nextExponential(1 / requestRate);
-        queue.enqueue(new NewRequestEvent(currentTime + poissonSample, getSampleFiles()));
+        queue.enqueue(new NewRequestEvent(currentTime + poissonSample, getSampleFile()));
     }
 }
 

@@ -27,3 +27,10 @@ module.exports.getTotalCacheHits = () => {
     return total_cache_hits;
 }
 
+module.exports.printStats = () => {
+    console.log(`Total requests : ${response_times.length} 
+    Total Cache hits : ${total_cache_hits}
+    Response times : ${response_times}
+    Cache hits : ${cache_hits}`)
+}
+
