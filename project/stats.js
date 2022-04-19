@@ -11,8 +11,8 @@ module.exports.appendToCacheHits = (ch) => {
     cache_hits.push(ch);
 }
 
-module.exports.incrementCacheHits = () => {
-    total_cache_hits++;
+module.exports.incrementCacheHits = (ch) => {
+    total_cache_hits+=ch;
 }
 
 module.exports.getResponseTimes = () => {

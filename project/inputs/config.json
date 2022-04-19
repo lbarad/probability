@@ -1,17 +1,17 @@
 {
     "config": {
-        "Total_Requests": 30000,
-        "Num_Files": 10000,
-        "Time_Limit": 600,
-        "Request_Rate": 10.0,
-        "Network_Bandwidth": 100,
-        "Access_Link_Bandwidth": 15,
-        "Round_Trip": 0.4,
-        "Pareto_Alpha": 2,
-        "Cache_Size": 200,
-        "Cache_Type": "LRU",
+        "totalRequests": 30000,
+        "numFiles": 10000,
+        "timeLimit": 600,
+        "requestRate": 10.0,
+        "networkBandwidth": 100,
+        "accessLinkBandwidth": 15,
+        "roundTrip": 0.4,
+        "paretoAlpha": 2,
+        "cacheSize": 200,
+        "cacheType": "LRU",
         "logging": true,
         "show_plot": false,
-        "Pareto_seed": 2
+        "paretoSeed": 2
     }
 }

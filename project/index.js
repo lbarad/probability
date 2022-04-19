@@ -2,8 +2,9 @@ var fs = require('fs');
 
 const { initConfig, getConfig } = require('./config.js');
 const { PriorityQueue } = require('./priorityQueue.js');
-const { NewRequestEvent } = require('./events.js');
+const { NewRequestEvent, FileRecievedEvent } = require('./events.js');
 const { setupFiles, getSampleFiles } = require('./files.js');
+const { setupCache } = require('./cache.js');
 
 //const inputFileName = process.argv[2];
 const inputFileName = "config.json";
@@ -19,16 +20,18 @@ let generateParetoDistribution = (minimum, alpha, size) => {
 }
 
 var inputConfig = JSON.parse(fs.readFileSync('inputs/' + inputFileName, 'utf8'));
-initConfig(inputConfig);
+initConfig(inputConfig.config);
 
 console.log(JSON.stringify(inputConfig, null, 2));
 
-
-let paretoAlpha = inputConfig["Pareto_Alpha"];
-let num_files = inputConfig["Num_Files"];
-let paretoSeed = inputConfig["Pareto_seed"];
-let totalRequests = getConfig()["Total_Requests"];
-let time_limit = getConfig()["Time_Limit"];
+// File i has a size Si,
+// which is a sample drawn from a Pareto distribution (heavy tail),
+// F_S, with mean μ (e.g., μ= 1 MB).
+let paretoAlpha = getConfig()["paretoAlpha"];
+let num_files = getConfig()["numFiles"];
+let paretoSeed = getConfig()["paretoSeed"];
+let totalRequests = getConfig()["totalRequests"];
+let time_limit = getConfig()["timeLimit"];
 
 let pQueue = new PriorityQueue({
     compare: (e1, e2) => {
@@ -36,15 +39,20 @@ let pQueue = new PriorityQueue({
     }
 });
 
+// Sample from pareto distribution for the file_sizes, mean should be ~1
 let file_sizes = generateParetoDistribution(paretoSeed, paretoAlpha, num_files);
+
+// Sample from pareto distribution for the file probabilities,
+// We then calculate the file probability as probabilitie[i]/sum(probabilities)
 let probabilities = generateParetoDistribution(paretoSeed, paretoAlpha, num_files);
-let currentTime = 0;
-let requestsProcessed = 0;
 let totalProbability = probabilities.reduce((partialSum, a) => partialSum + a, 0);
 
-//TO-DO
-//setupFiles();
-//let cache = setupCache(); //This should setup the cache according to the cache stratergy
+
+let currentTime = 0;
+let requestsProcessed = 0;
+
+setupFiles(num_files, file_sizes, probabilities, totalProbability);
+let cache = setupCache(getConfig()["cacheType"], parseFloat(getConfig()["cacheSize"])); //This should setup the cache according to the cache stratergy
 
 pQueue.enqueue(new NewRequestEvent(currentTime, getSampleFiles()));
 

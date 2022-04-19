@@ -12,6 +12,7 @@
   "dependencies": {
     "@datastructures-js/heap": "3.2.0",
     "js-priority-queue": "^0.1.5",
+    "queue-fifo": "^0.2.6",
     "random": "^3.0.6"
   }
 }
