@@ -5,24 +5,9 @@ const { NewRequestEvent, FileRecievedEvent } = require('./src/events.js');
 const { setupFiles, getSampleFile, verifyFiles } = require('./src/files.js');
 const { setupCache } = require('./src/cache.js');
 const { printStats, incrementTotalEvents, setTotalRequestsProcessed, startTimer, endTimer, generateCSV } = require('./src/stats.js');
+const { generateParetoDistribution } = require('./src/utils.js')
 
 const inputFileName = "config.json";
-
-/**
- * Function to generate pareto distribution
- * @param {float} minimum 
- * @param {float} alpha 
- * @param {int} size 
- * @returns {Array.<float>} An array of generated pareto distribution
- */
-let generateParetoDistribution = (minimum, alpha, size) => {
-    let res = [];
-    for (let i = 0; i < size; i++) {
-        var u = 1.0 - Math.random();
-        res.push(minimum / Math.pow(u, 1.0 / alpha));
-    }
-    return res;
-}
 
 var inputConfig = JSON.parse(fs.readFileSync('inputs/' + inputFileName, 'utf8'));
 initConfig(inputConfig.config);

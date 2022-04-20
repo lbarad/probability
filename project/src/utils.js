@@ -15,6 +15,22 @@ module.exports.nextExponential = function (lambda) {
 }
 
 /**
+ * Function to generate pareto distribution
+ * @param {float} minimum 
+ * @param {float} alpha 
+ * @param {int} size 
+ * @returns {Array.<float>} An array of generated pareto distribution
+ */
+ module.exports.generateParetoDistribution = (minimum, alpha, size) => {
+    let res = [];
+    for (let i = 0; i < size; i++) {
+        var u = 1.0 - Math.random();
+        res.push(minimum / Math.pow(u, 1.0 / alpha));
+    }
+    return res;
+}
+
+/**
  * Function to cumulative weights from array of weights
  * @param {Array<float>} weights 
  * @returns {Array<float>}
