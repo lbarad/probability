@@ -1,10 +1,10 @@
 const fs = require('fs');
-const { initConfig, getConfig } = require('./config.js');
-const { PriorityQueue } = require('./priorityQueue.js');
-const { NewRequestEvent, FileRecievedEvent } = require('./events.js');
-const { setupFiles, getSampleFile, verifyFiles } = require('./files.js');
-const { setupCache } = require('./cache.js');
-const { printStats, incrementTotalEvents, setTotalRequestsProcessed, startTimer, endTimer, generateCSV } = require('./stats.js');
+const { initConfig, getConfig } = require('./src/config.js');
+const { PriorityQueue } = require('./src/priorityQueue.js');
+const { NewRequestEvent, FileRecievedEvent } = require('./src/events.js');
+const { setupFiles, getSampleFile, verifyFiles } = require('./src/files.js');
+const { setupCache } = require('./src/cache.js');
+const { printStats, incrementTotalEvents, setTotalRequestsProcessed, startTimer, endTimer, generateCSV } = require('./src/stats.js');
 
 const inputFileName = "config.json";
 

@@ -83,6 +83,9 @@ Estimated Inbound Traffic Rate : ${cacheMissRate * parseFloat(getConfig()["reque
 Average Access Link Load: ${cacheMissRate * parseFloat(getConfig()["requestRate"]) * mean() / parseFloat(getConfig()["accessLinkBandwidth"])}`)
 }
 
+/**
+ * Function to generate csv for results
+ */
 module.exports.generateCSV = () => {
     let string = `Response Time,Cache hit, cache miss rate,${Object.keys(getConfig())}\n`;
     for(let i=0; i<response_times.length;i++){
