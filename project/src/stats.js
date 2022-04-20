@@ -2,9 +2,9 @@ const { getConfig } = require("./config");
 const { mean } = require("./files");
 const fs = require('fs');
 
-let response_times = [];
-let cache_hits = [];
-let total_cache_hits = 0;
+let responseTimes = [];
+let cacheHits = [];
+let totalCacheHits = 0;
 let totalEventsProcessed = 0;
 let totalRequestsProcessed = 0;
 let startTime;
@@ -16,7 +16,7 @@ let cacheMissRate;
  * @param {float} rt 
  */
 module.exports.appendToResponseTimes = (rt) => {
-    response_times.push(rt);
+    responseTimes.push(rt);
 }
 
 /**
@@ -24,7 +24,7 @@ module.exports.appendToResponseTimes = (rt) => {
  * @param {boolean} ch 
  */
 module.exports.appendToCacheHits = (ch) => {
-    cache_hits.push(ch);
+    cacheHits.push(ch);
 }
 
 /**
@@ -32,7 +32,7 @@ module.exports.appendToCacheHits = (ch) => {
  * @param {number} ch
  */
 module.exports.incrementCacheHits = (ch) => {
-    total_cache_hits += ch;
+    totalCacheHits += ch;
 }
 
 /**
@@ -40,7 +40,7 @@ module.exports.incrementCacheHits = (ch) => {
  * @returns {Array.<float>}
  */
 module.exports.getResponseTimes = () => {
-    return response_times;
+    return responseTimes;
 }
 
 /**
@@ -66,7 +66,7 @@ module.exports.endTimer = () => {
  * Function to print the statistics of the simulation
  */
 module.exports.printStats = () => {
-    cacheMissRate = 1 - (total_cache_hits / totalRequestsProcessed);
+    cacheMissRate = 1 - (totalCacheHits / totalRequestsProcessed);
     console.log(
         `Time taken for simulation : ${(endTime - startTime) / 1000}
 
@@ -78,13 +78,14 @@ Total requests : ${totalRequestsProcessed}
 
 Total Events processed : ${totalEventsProcessed}
 
-Total Cache hits : ${total_cache_hits}
+Total Cache hits : ${totalCacheHits}
 
 Cache Miss Rate : ${cacheMissRate}
 
 Estimated Inbound Traffic Rate : ${cacheMissRate * parseFloat(getConfig()["requestRate"])} requests / second
 
-Average Access Link Load: ${cacheMissRate * parseFloat(getConfig()["requestRate"]) * mean() / parseFloat(getConfig()["accessLinkBandwidth"])}`)
+Average Access Link Load: ${cacheMissRate * parseFloat(getConfig()["requestRate"]) * mean() / parseFloat(getConfig()["accessLinkBandwidth"])}
+`);
 }
 
 /**
@@ -92,14 +93,14 @@ Average Access Link Load: ${cacheMissRate * parseFloat(getConfig()["requestRate"
  */
 module.exports.generateCSV = () => {
     let string = `Response Time,Cache hit, cache miss rate,${Object.keys(getConfig())}\n`;
-    for(let i=0; i<response_times.length;i++){
+    for(let i=0; i<responseTimes.length;i++){
         if(i==0)
-            string += `${response_times[i]},${cache_hits[i]},${cacheMissRate},${Object.values(getConfig())}\n`;
+            string += `${responseTimes[i]},${cacheHits[i]},${cacheMissRate},${Object.values(getConfig())}\n`;
         else
-            string += `${response_times[i]},${cache_hits[i]}\n`;
+            string += `${responseTimes[i]},${cacheHits[i]}\n`;
     }
-    fs.writeFile('outputs/test.csv', string, function (err) {
+    fs.writeFile('outputs/stats.csv', string, function (err) {
         if (err) throw err;
-        console.log('csv is created successfully in outputs folder.');
+        console.log('stats.csv is successfully created in outputs folder.\n');
       });
 }

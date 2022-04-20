@@ -4,6 +4,9 @@
 - Rahul Vemula
 - Lahari Barad
 
+## Prerequisites
+1. npm/nodeJS
+
 ## Instructions to execute
 1. Execute the below command first for all the packages to get installed.
 
@@ -13,3 +16,4 @@
 3. Now, execute the below command to run the simulation process.
 
     `npm start`
+4. Statistics of the simulation will be logged to the terminal. A `stats.csv` file will be generated in the outputs folder which contains all the details of the simulation. 

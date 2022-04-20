@@ -89,9 +89,9 @@ class LargestFirstCache {
 
   get(file) {
     if (file.id in this.cache)
-      return this.cache[file.id]
+      return this.cache[file.id];
     else
-      return null
+      return null;
   }
 
   add(file) {

@@ -53,7 +53,7 @@ class NewRequestEvent extends Event {
                     currentTime + (this.file.size / networkBandwidth),
                     this.file,
                     this,
-                    { "cache_hit": true }
+                    { "cacheHit": true }
                 )
             )
         }
@@ -81,7 +81,7 @@ class FileRecievedEvent extends Event {
      * @param {*} cache 
      * @param {*} currentTime 
      */
-    process(queue, cache, current_time) {
+    process(queue, cache, currentTime) {
         // This event represents that a file has been received by the user.
         //   When processing such an event, the following need to be done.
         //   calculate the response time associated with that file and record the
@@ -95,8 +95,8 @@ class FileRecievedEvent extends Event {
         }
         let start = p.time;
         appendToResponseTimes(end - start);
-        appendToCacheHits(this.meta["cache_hit"]);
-        incrementCacheHits(this.meta["cache_hit"]);
+        appendToCacheHits(this.meta["cacheHit"]);
+        incrementCacheHits(this.meta["cacheHit"]);
         return 1;
     }
 }
@@ -113,7 +113,7 @@ class ArriveAtQueueEvent extends Event {
      * @param {*} cache 
      * @param {*} currentTime 
      */
-    process(queue, cache, current_time) {
+    process(queue, cache, currentTime) {
 
         // if the queue is not empty,
         // add the file (i.e., the info about the file)
@@ -125,9 +125,9 @@ class ArriveAtQueueEvent extends Event {
             // if the queue is empty,
             // generate a new depart - queue - event,
             // with the event - time = current - time + Si / Ra
-            let r_a = parseFloat(getConfig()["accessLinkBandwidth"]);
+            let linkBandwidth = parseFloat(getConfig()["accessLinkBandwidth"]);
             queue.enqueue(new DepartQueueEvent(
-                current_time + (this.file.size / r_a), this.file, this
+                currentTime + (this.file.size / linkBandwidth), this.file, this
             ));
         }
     }
@@ -143,7 +143,7 @@ class DepartQueueEvent extends Event {
      * @param {*} cache 
      * @param {*} currentTime 
      */
-    process(queue, cache, current_time) {
+    process(queue, cache, currentTime) {
 
         // store the new file in the cache if there is enough space.
         // If the cacheis full, remove enough files based on your cache replacement policy
@@ -153,10 +153,10 @@ class DepartQueueEvent extends Event {
         cache.add(this.file);
         let networkBandwidth = parseFloat(getConfig()["networkBandwidth"]);
         queue.enqueue(new FileRecievedEvent(
-            current_time + (this.file.size / networkBandwidth),
+            currentTime + (this.file.size / networkBandwidth),
             this.file,
             this,
-            { "cache_hit": false },
+            { "cacheHit": false },
         ));
 
         if (!FIFO_QUEUE.isEmpty()) {
@@ -165,8 +165,8 @@ class DepartQueueEvent extends Event {
             // for the head-of-queue file, say j, with the event-time = current-time+Sj/Ra
 
             let [head, ev] = FIFO_QUEUE.dequeue();
-            r_a = parseFloat(getConfig()["accessLinkBandwidth"]);
-            queue.enqueue(new DepartQueueEvent(current_time + (head.size / r_a), head, ev));
+            let accessLinkBW = parseFloat(getConfig()["accessLinkBandwidth"]);
+            queue.enqueue(new DepartQueueEvent(currentTime + (head.size / accessLinkBW), head, ev));
         }
     }
 }

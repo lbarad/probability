@@ -50,7 +50,7 @@ module.exports.calculateCumulativeWeights = function (weights) {
  * @param {Array.<float>} cumulativeWeights 
  * @returns {*} item
  */
-module.exports.cumulative_weighted_random = function (items, cumulativeWeights) {
+module.exports.cumulativeWeightedRandom = function (items, cumulativeWeights) {
     let i;
 
     // for (i = 0; i < weights.length; i++)

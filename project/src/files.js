@@ -1,4 +1,4 @@
-const {cumulative_weighted_random, calculateCumulativeWeights} = require('./utils.js');
+const {cumulativeWeightedRandom, calculateCumulativeWeights} = require('./utils.js');
 
 let fileStore = {
     files: [],
@@ -30,7 +30,7 @@ module.exports.setupFiles = (n, fileSizes, weights, totalWeight) => {
  */
 module.exports.getSampleFile = () => {
     // Sample as determined by probability weights.
-    let randomFile = cumulative_weighted_random(fileStore.files, fileStore.cumulativeWeights);
+    let randomFile = cumulativeWeightedRandom(fileStore.files, fileStore.cumulativeWeights);
 
     if(!randomFile) {
         console.log("File undefined");
