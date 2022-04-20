@@ -1,5 +1,11 @@
 const { Queue } = require("./Queue.js");
 
+/**
+ * Function to setup the cache as per configuration
+ * @param {string} cacheType 
+ * @param {number} capacity 
+ * @returns {*} Cache
+ */
 module.exports.setupCache = (cacheType, capacity) => {
   if (cacheType == "LRU") {
     return new LRUCache(capacity);
@@ -15,9 +21,11 @@ module.exports.setupCache = (cacheType, capacity) => {
   }
 }
 
-
+/**
+ * @class LRUCache
+ */
 class LRUCache {
-  //Oldest First / Least Popular
+  //Least Popular
 
   constructor(capacity) {
     this.capacity = capacity
@@ -29,9 +37,6 @@ class LRUCache {
     this.cache.forEach((value) => {
       sum += value.size;
     });
-    // for (let i = 0; i < this.cache.size; i++) {
-    //   sum += this.cache.values()[i].size;
-    // }
     return sum;
   }
 
@@ -39,7 +44,6 @@ class LRUCache {
 
   get(file) {
     if (this.cache.has(file.id)) {
-      //this.cache.move_to_end(file.id);
       let temp = this.cache.get(file.id);
       this.cache.delete(file.id);
       this.cache.set(file.id, temp);
@@ -59,14 +63,16 @@ class LRUCache {
       let key = iterator.next().value;
       let itemSize = this.cache.get(key).size;
       this.cache.delete(key);
-      //(_, item) = self.cache.popitem(last = False)
       size -= itemSize
     }
   }
 }
 
-
+/**
+ * @class LargestFirstCache
+ */
 class LargestFirstCache {
+  //Largest first
 
   constructor(capacity) {
     this.capacity = capacity
@@ -113,8 +119,10 @@ class LargestFirstCache {
   }
 }
 
+/**
+ * @class FIFOCache
+ */
 class FIFOCache {
-
   //FIFO Cache
 
 

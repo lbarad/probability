@@ -2,9 +2,9 @@ const fs = require('fs');
 const { initConfig, getConfig } = require('./config.js');
 const { PriorityQueue } = require('./priorityQueue.js');
 const { NewRequestEvent, FileRecievedEvent } = require('./events.js');
-const { setupFiles, getSampleFile } = require('./files.js');
+const { setupFiles, getSampleFile, verifyFiles } = require('./files.js');
 const { setupCache } = require('./cache.js');
-const { printStats } = require('./stats.js');
+const { printStats, incrementTotalEvents, setTotalRequestsProcessed, startTimer, endTimer, generateCSV } = require('./stats.js');
 
 const inputFileName = "config.json";
 
@@ -59,16 +59,19 @@ let cache = setupCache(getConfig()["cacheType"], parseFloat(getConfig()["cacheSi
 
 pQueue.enqueue(new NewRequestEvent(currentTime, getSampleFile()));
 
-//loop_start = time.time()
-let event_count = 0
+startTimer();
 
 while (requestsProcessed < totalRequests || currentTime < time_limit) {
     let event = pQueue.dequeue();
     currentTime = event.time;
     event.process(pQueue, cache, currentTime);
-    event_count += 1
+    incrementTotalEvents();
     if (event instanceof FileRecievedEvent)
         requestsProcessed += 1
 }
 
+endTimer();
+
+setTotalRequestsProcessed(requestsProcessed);
 printStats();
+generateCSV();

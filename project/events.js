@@ -4,6 +4,9 @@ const { getSampleFile } = require('./files.js');
 const { Queue } = require('./Queue.js');
 const { appendToCacheHits, appendToResponseTimes, incrementCacheHits } = require('./stats.js');
 
+/**
+ * @class Event
+ */
 class Event {
     constructor(time, file, prev, meta) {
         this.time = time;
@@ -12,18 +15,36 @@ class Event {
         this.meta = meta ? meta : {};
     }
 
+    /**
+     * Function to check if time of current event is less than time of the input event
+     * @param {*} otherEvent 
+     * @returns {boolean}
+     */
     lessThan(otherEvent) {
         return this.time < other.time
     }
 
+    /**
+     * Function to check if time of current event is greater than or equal to time of the input event
+     * @param {*} otherEvent 
+     * @returns {boolean}
+     */
     lessThanOrEquals(otherEvent) {
         return this.time <= other.time
     }
 }
 
-
+/**
+ * @class NewRequestEvent
+ */
 class NewRequestEvent extends Event {
 
+    /**
+     * Function to process the event
+     * @param {*} queue 
+     * @param {*} cache 
+     * @param {*} currentTime 
+     */
     process(queue, cache, currentTime) {
         if (cache.get(this.file)) {
             let networkBandwidth = parseFloat(getConfig()["networkBandwidth"])
@@ -49,8 +70,17 @@ class NewRequestEvent extends Event {
     }
 }
 
+/**
+ * @class FileRecievedEvent
+ */
 class FileRecievedEvent extends Event {
 
+    /**
+     * Function to process the event
+     * @param {*} queue 
+     * @param {*} cache 
+     * @param {*} currentTime 
+     */
     process(queue, cache, current_time) {
         // This event represents that a file has been received by the user.
         //   When processing such an event, the following need to be done.
@@ -73,7 +103,16 @@ class FileRecievedEvent extends Event {
 
 let FIFO_QUEUE = new Queue();
 
+/**
+ * @class ArriveAtQueueEvent
+ */
 class ArriveAtQueueEvent extends Event {
+    /**
+     * Function to process the event
+     * @param {*} queue 
+     * @param {*} cache 
+     * @param {*} currentTime 
+     */
     process(queue, cache, current_time) {
 
         // if the queue is not empty,
@@ -94,13 +133,22 @@ class ArriveAtQueueEvent extends Event {
     }
 }
 
+/**
+ * @class DepartQueueEvent
+ */
 class DepartQueueEvent extends Event {
+    /**
+     * Function to process the event
+     * @param {*} queue 
+     * @param {*} cache 
+     * @param {*} currentTime 
+     */
     process(queue, cache, current_time) {
 
         // store the new file in the cache if there is enough space.
         // If the cacheis full, remove enough files based on your cache replacement policy
         // and store the new file
-        // .- generate a new file-received-event, with the event-time = current-time +Si/Rc
+        // generate a new file-received-event, with the event-time = current-time +Si/Rc
 
         cache.add(this.file);
         let networkBandwidth = parseFloat(getConfig()["networkBandwidth"]);

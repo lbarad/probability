@@ -15,22 +15,36 @@ module.exports.nextExponential = function (lambda) {
 }
 
 /**
- * Weighted random picking of an element from the items array according to weights
+ * Function to cumulative weights from array of weights
+ * @param {Array<float>} weights 
+ * @returns {Array<float>}
+ */
+module.exports.calculateCumulativeWeights = function (weights) {
+    let cumWeights = [];
+    for (i = 0; i < weights.length; i++) {
+        cumWeights[i] = weights[i];
+        cumWeights[i] += cumWeights[i - 1] || 0;
+    }
+    return cumWeights;
+}
+
+/**
+ * Weighted random picking of an element from the items array according to cumulative weights
  * @param {Array.<*>} items 
- * @param {Array.<float>} weights 
+ * @param {Array.<float>} cumulativeWeights 
  * @returns {*} item
  */
-module.exports.weighted_random = function (items, weights) {
+module.exports.cumulative_weighted_random = function (items, cumulativeWeights) {
     let i;
 
-    for (i = 0; i < weights.length; i++)
-        weights[i] += weights[i - 1] || 0;
-    
-    let random = Math.random() * weights[weights.length - 1];
-    
-    for (i = 0; i < weights.length; i++)
-        if (weights[i] > random)
+    // for (i = 0; i < weights.length; i++)
+    //     weights[i] += weights[i - 1] || 0;
+
+    let random = Math.random() * cumulativeWeights[cumulativeWeights.length - 1];
+
+    for (i = 0; i < cumulativeWeights.length; i++)
+        if (cumulativeWeights[i] > random)
             break;
-    
+
     return items[i];
 }

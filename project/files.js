@@ -1,8 +1,8 @@
-const {weighted_random} = require('./utils.js');
+const {cumulative_weighted_random, calculateCumulativeWeights} = require('./utils.js');
 
 let fileStore = {
     files: [],
-    weights: []
+    cumulativeWeights: []
 }
 
 /**
@@ -20,22 +20,8 @@ module.exports.setupFiles = (n, fileSizes, weights, totalWeight) => {
             prob: weights[i] / totalWeight
         });
     }
-    fileStore.weights = weights;
-}
 
-module.exports.verifyFiles = (n, fileSizes, probabilities) => {
-
-    // Check that probabilities add up close to one, and mean of file size is approximately 1.
-
-    //To-Do
-    //p = sum(map(lambda f: f.p, fileStore.files))
-    //mean_size = sum(map(lambda f: f.size, fileStore.files)) / len(fileStore.files)
-
-    // logger.debug("Sum probabilties: {p}");
-    // logger.debug("Mean file size: {mean_size}");
-
-    console.log("Sum probabilties: " + fileStore.files.reduce((a, b) => a.prob + b.prob, 0));
-    console.log("Mean file size: " + this.size() / fileStore.files.length);
+    fileStore.cumulativeWeights = calculateCumulativeWeights(weights);
 }
 
 /**
@@ -44,8 +30,11 @@ module.exports.verifyFiles = (n, fileSizes, probabilities) => {
  */
 module.exports.getSampleFile = () => {
     // Sample as determined by probability weights.
-    let randomFile = weighted_random(fileStore.files, fileStore.weights);
-    //console.log(randomFile.id);
+    let randomFile = cumulative_weighted_random(fileStore.files, fileStore.cumulativeWeights);
+
+    if(!randomFile) {
+        console.log("File undefined");
+    }
     return randomFile;
 }
 
@@ -54,12 +43,7 @@ module.exports.getSampleFile = () => {
  * @returns {float} MeanFileSizes
  */
 module.exports.mean = () => {
-    //return sum(map(lambda f: f.size, fileStore.files)) / len(fileStore.files)
-    let size = 0;
-    for(let i=0; i<fileStore.files.length; i++){
-        size = fileStore.files[i].size;
-    }
-    return size/fileStore.files.length;
+    return this.size()/fileStore.files.length;
 }
 
 /**
@@ -67,7 +51,6 @@ module.exports.mean = () => {
  * @returns {float} sumFileSizes
  */
 module.exports.size = () => {
-    //return sum(map(lambda f: f.size, fileStore.files))
     let size = 0;
     for(let i=0; i<fileStore.files.length; i++){
         size += fileStore.files[i].size;
