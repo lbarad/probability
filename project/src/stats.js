@@ -70,6 +70,10 @@ module.exports.printStats = () => {
     console.log(
         `Time taken for simulation : ${(endTime - startTime) / 1000}
 
+Cache size: ${getConfig()["cacheSize"]}
+
+No of files: ${getConfig()["numFiles"]}
+
 Total requests : ${totalRequestsProcessed} 
 
 Total Events processed : ${totalEventsProcessed}
@@ -96,6 +100,6 @@ module.exports.generateCSV = () => {
     }
     fs.writeFile('outputs/test.csv', string, function (err) {
         if (err) throw err;
-        console.log('File is created successfully.');
+        console.log('csv is created successfully in outputs folder.');
       });
 }

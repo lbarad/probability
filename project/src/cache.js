@@ -111,8 +111,8 @@ class LargestFirstCache {
         }
       }
 
-      delete this.cache[largest]
       size -= this.cache[largest].size
+      delete this.cache[largest]
 
     }
     this.cache[file.id] = file
